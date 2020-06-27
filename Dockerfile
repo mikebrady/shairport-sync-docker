@@ -1,5 +1,5 @@
 FROM alpine AS builder-base
-
+# General Build System:
 RUN apk -U add \
         git \
         build-base \
@@ -19,6 +19,7 @@ RUN apk -U add \
         mosquitto-dev \
         xmltoman
 
+# ALAC Build System:
 FROM builder-base AS builder-alac
 
 RUN 	git clone --recursive https://github.com/mikebrady/alac
@@ -28,6 +29,7 @@ RUN 	./configure
 RUN 	make
 RUN 	make install
 
+# Shairport Sync Build System:
 FROM 	builder-base AS builder-sps
 
 COPY 	--from=builder-alac /usr/local/lib/libalac.* /usr/local/lib/
@@ -54,6 +56,35 @@ RUN 	./configure \
               --with-convolution
 RUN 	make -j $(nproc)
 RUN 	make install
+
+# Shairport Sync Runtime System:
+FROM 	alpine
+
+RUN 	apk add \
+              alsa-lib \
+              dbus \
+              popt \
+              glib \
+              mbedtls \
+              soxr \
+              avahi \
+              libconfig \
+              libsndfile \
+              mosquitto-libs \
+              su-exec \
+              libgcc \
+              libgc++
+
+RUN 	rm -rf  /lib/apk/db/*
+
+COPY 	--from=builder-alac /usr/local/lib/libalac.* /usr/local/lib/
+COPY 	--from=builder-sps /etc/shairport-sync* /etc/
+COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-dbus.conf /etc/dbus-1/system.d/
+COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-mpris.conf /etc/dbus-1/system.d/
+COPY 	--from=builder-sps /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
+
+# Create non-root user for running the container -- running as the user 'shairport-sync' also allows
+# Shairport Sync to provide the D-Bus and MPRIS interfaces within the container
 
 RUN 	addgroup shairport-sync 
 RUN 	adduser -D shairport-sync -G shairport-sync
