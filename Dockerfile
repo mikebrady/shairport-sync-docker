@@ -38,7 +38,6 @@ COPY 	--from=builder-alac /usr/local/include /usr/local/include
 
 RUN 	git clone --recursive https://github.com/mikebrady/shairport-sync
 WORKDIR shairport-sync
-RUN 	git checkout development
 RUN 	autoreconf -fi
 RUN 	./configure \
               --with-alsa \
