@@ -92,7 +92,6 @@ RUN 	adduser -D shairport-sync -G shairport-sync
 # Add the shairport-sync user to the pre-existing audio group, which has ID 29, for access to the ALSA stuff
 RUN 	addgroup -g 29 docker_audio && addgroup shairport-sync docker_audio
 
-COPY 	shairport-sync.conf /etc/shairport-sync.conf
 COPY 	start.sh /start.sh
 
 ENTRYPOINT [ "/start.sh" ]
