@@ -1,4 +1,5 @@
 FROM alpine AS builder-base
+
 # General Build System:
 RUN apk -U add \
         git \
@@ -32,13 +33,16 @@ RUN 	make install
 # Shairport Sync Build System:
 FROM 	builder-base AS builder-sps
 
+# This may be modified by the Github Action Workflow
+ARG SHAIRPORT_SYNC_BRANCH=master
+
 COPY 	--from=builder-alac /usr/local/lib/libalac.* /usr/local/lib/
 COPY 	--from=builder-alac /usr/local/lib/pkgconfig/alac.pc /usr/local/lib/pkgconfig/alac.pc
 COPY 	--from=builder-alac /usr/local/include /usr/local/include
 
 RUN 	git clone --recursive https://github.com/mikebrady/shairport-sync
 WORKDIR shairport-sync
-RUN 	git checkout development
+RUN 	git checkout "$SHAIRPORT_SYNC_BRANCH"
 RUN 	autoreconf -fi
 RUN 	./configure \
               --with-alsa \

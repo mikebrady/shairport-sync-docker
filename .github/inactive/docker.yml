@@ -1,0 +1,68 @@
+name: Docker
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+
+    # Publish `1.2.3` tags as releases.
+    tags:
+      - '*'
+
+  # Run a test build for any PRs.
+  pull_request:
+
+env:
+  IMAGE_NAME: mikebrady/shairport-sync
+#  DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+  DOCKER_PLATFORMS: linux/arm/v6
+  DOCKER_HUB_USER: mikebrady
+
+jobs:
+  # Build the container image for multiple architectures
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # This unusual setup is due to limitations with `docker buildx`. 
+      # See: https://github.com/crazy-max/ghaction-docker-buildx/issues/134
+      - name: Prepare
+        id: prepare
+        run: |
+          # Map git ref branch or tag name to Docker tag version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          # If tagged with a version, build the same version of shairport-sync
+          SHAIRPORT_SYNC_BRANCH=master
+          [ "$VERSION" != "latest" ] && SHAIRPORT_SYNC_BRANCH=tags/$VERSION
+
+          # Output build arguments for downstream steps
+          echo ::set-output name=buildx_args::\
+            --platform ${DOCKER_PLATFORMS} \
+            --build-arg SHAIRPORT_SYNC_BRANCH=${SHAIRPORT_SYNC_BRANCH} \
+            --tag ${IMAGE_NAME}:${VERSION} \
+            .
+
+      - uses: actions/checkout@v2
+      - uses: crazy-max/ghaction-docker-buildx@v1.2.1
+
+      - name: Build
+        run: |
+          docker buildx build \
+            --output type=image,push=false \
+            ${{ steps.prepare.outputs.buildx_args }}
+
+      - name: Log into registry
+        if: github.event_name == 'push'
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login --username $DOCKER_HUB_USER --password-stdin
+
+      - name: Push to registry
+        if: github.event_name == 'push'
+        run: |
+          docker buildx build \
+            --output type=image,push=true \
+            ${{ steps.prepare.outputs.buildx_args }}
+
