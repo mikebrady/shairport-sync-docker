@@ -3,7 +3,7 @@ name: Docker
 # Thanks to Ryan Govostes <https://github.com/rgov> for this workflow.
 
 # Using 'if:' conditions, the script will not execute the steps
-# unless it is running out of the 'mikebrady/shairport-sync' GitHub repository.
+# unless it is running out of the 'mikebrady/shairport-sync-docker' GitHub repository.
 
 on:
   push:
