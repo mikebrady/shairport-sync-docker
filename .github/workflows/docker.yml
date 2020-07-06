@@ -18,7 +18,8 @@ on:
 env:
   IMAGE_NAME: mikebrady/shairport-sync
 #  DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
-  DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm64
+#  DOCKER_PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm64
+  DOCKER_PLATFORMS: linux/arm/v6
   DOCKER_HUB_USER: mikebrady
 
 jobs:
