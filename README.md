@@ -1,23 +1,25 @@
-This is a very volatile repository right now. Please do not rely on it.
+Shairport Sync is an Apple AirPlay audio player. For more information, please visit its [GitHub repository](https://github.com/mikebrady/shairport-sync).
 
-Shairport Sync is an Apple AirPlay audio player – it plays audio streamed from iTunes, iOS, Apple TV and macOS devices and AirPlay sources such as Quicktime Player and [ForkedDaapd](http://ejurgensen.github.io/forked-daapd/), among others. Multi-room audio is possible for players that support it, such as iTunes and the macOS Music app.
-
-*Default settings:* The AirPlay service will have the host's `hostname`, audio output will be through the `alsa` sound system to the `default` output device and any hardware mixer the output device may have will not be used. The container will run in the background (`-d`) when the host starts up (`--restart unless-stopped`).
+**Basic Usage**
 
 ```
 $ docker run -d --restart unless-stopped --net host --device /dev/snd \
     mikebrady/shairport-sync
 ```
-*Extra settings:* Any settings you add to the end of the command line are passed to Shairport Sync. For example, to call the service `Lounge`, to output to alsa device `hw:1` and use the device's built-in hardware mixer control called `PCM` for volume control:
+The above command will run Shairport Sync as a daemon in a Docker container, accessing the computer's ALSA audio infrastructure. It will send audio to the default output device and make no use of any hardware mixers the default device might have. The AirPlay service name will be the host's `hostname` with the first letter capitalised, e.g. `Ubuntu`.
+
+**Options**
+
+Any options you add to the command above will be passed to Shairport Sync -- please go to the [GitHub repository](https://github.com/mikebrady/shairport-sync) for more details of the options. Here is an example:
 ```
 $ docker run -d --restart unless-stopped --net host --device /dev/snd \
-    mikebrady/shairport-sync -a Lounge -- -d hw:1 -c PCM
+    mikebrady/shairport-sync -a DenSystem -- -d hw:0 -c PCM
 ```
+This will sent audio to alsa hardware device `hw:0` and make use of the that device's mixer control called `PCM`. The service will be visible as `DenSystem` on the network.
 
-*Debugging Session:* Here, the container is run interactively (`-it`) and will be deleted (`--rm`) upon exit. It is based on the `development` image. Shairport Sync is run with log verbosity of 1 (`-vu`) and statistics enabled (`--statistics`) :
-```
-$ docker run -it --rm --net host --device /dev/snd \
-    mikebrady/shairport-sync:development -vu --statistics -a Lounge -- -d hw:1 -c PCM
-```
-Lots more information available at [https://github.com/mikebrady/shairport-sync](https://github.com/mikebrady/shairport-sync).
+**Configuration File**
+
+Edit the configuration file `/etc/shairport-sync.conf` in the container (or use the `-v` option to mirror an external copy of `shairport-sync.conf` in to `/etc/shairport-sync.conf`) to get access to the full range of configuration options.
+
+Lots more information at the [GitHub repository](https://github.com/mikebrady/shairport-sync).
 
