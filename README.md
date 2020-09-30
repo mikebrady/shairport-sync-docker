@@ -24,3 +24,4 @@ This will sent audio to alsa hardware device `hw:0` and make use of the that dev
 Edit the configuration file `/etc/shairport-sync.conf` in the container (or use the `-v` option to mirror an external copy of `shairport-sync.conf` in to `/etc/shairport-sync.conf`) to get access to the full range of configuration options.
 
 Lots more information at the [GitHub repository](https://github.com/mikebrady/shairport-sync).
+
