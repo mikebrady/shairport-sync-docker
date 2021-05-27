@@ -63,7 +63,7 @@ RUN 	make install
 # Shairport Sync Runtime System:
 FROM 	alpine:3.12
 
-RUN 	apk add \
+RUN 	apk -U add \
               alsa-lib \
               dbus \
               popt \
