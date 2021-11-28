@@ -10,4 +10,4 @@ dbus-daemon --system
 
 avahi-daemon --daemonize --no-chroot
 
-su-exec shairport-sync shairport-sync $@
+su-exec shairport-sync shairport-sync "$@"
