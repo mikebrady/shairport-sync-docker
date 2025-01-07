@@ -6,7 +6,7 @@ name: Docker
 # unless it is running out of the 'mikebrady/shairport-sync-docker' GitHub repository.
 
 on:
-  push:
+  workflow_dispatch:
     # Publish `master` as Docker `latest` image.
     branches:
       - master
