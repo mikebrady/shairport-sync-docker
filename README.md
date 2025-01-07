@@ -1,3 +1,8 @@
+# This Repository if Obsolete!
+For up-to-date information about Shairport Sync in Docker, please visit the [Shairport Sync Docker Hub repository](https://hub.docker.com/r/mikebrady/shairport-sync).
+
+This repository will be deleted soon.
+
 # Shairport Sync
 
 Shairport Sync is an Apple AirPlay audio player. For more information, please visit its [GitHub repository](https://github.com/mikebrady/shairport-sync).
