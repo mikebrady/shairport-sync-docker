@@ -1,5 +1,7 @@
-# This Repository if Obsolete!
+# This Repository Will Be Deleted Soon!
 For up-to-date information about Shairport Sync in Docker, please visit the [Shairport Sync Docker Hub repository](https://hub.docker.com/r/mikebrady/shairport-sync).
+
+# This Repository is Obsolete!
 
 This repository will be deleted soon.
 
